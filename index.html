@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Eye Love | ASCII Animation</title>
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050509;color:white;font-family:Arial,sans-serif}canvas{display:block;width:100%;height:100%}footer{position:fixed;bottom:20px;width:100%;text-align:center;color:#bdbdc8;font-size:13px}</style></head>
+<body><canvas id="c"></canvas><footer>Eye Love · ASCII Particle Animation</footer>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');let w,h,dpr,particles=[],start=performance.now();
+const chars='@#$%&*+=-:.';
+function shape(x,y){let r=Math.max(Math.abs(x),Math.abs(y)),outer=r<1&&!(Math.abs(x)>.75&&Math.abs(y)>.75&&Math.hypot(x,y)>1.13),inner=r<.76;return (outer&&!inner)||(Math.hypot(x,y)>.34&&Math.hypot(x,y)<.53)||Math.hypot(x-.55,y+.55)<.12}
+function color(x,y){let t=(x+y+2)/4;return t<.5?`rgb(255,${Math.round(60+t*250)},${Math.round(50+t*300)})`:`rgb(${Math.round(255-(t-.5)*170)},45,220)`}
+function resize(){w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);let s=Math.min(w*.32,h*.52,270)/110;particles=[];for(let y=-110;y<=110;y+=7)for(let x=-110;x<=110;x+=7){let nx=x/110,ny=y/110;if(shape(nx,ny))particles.push({x:Math.random()*w,y:Math.random()*h,tx:w/2+x*s,ty:h/2+y*s-20,ch:chars[Math.floor(Math.random()*chars.length)],c:color(nx,ny)})}start=performance.now()}
+addEventListener('resize',resize);resize();let prev=performance.now();
+function frame(now){let dt=Math.min((now-prev)/1000,.05);prev=now;ctx.fillStyle='#050509';ctx.fillRect(0,0,w,h);ctx.font='bold 12px monospace';ctx.textAlign='center';for(const p of particles){let k=Math.min(1,dt*3.5);p.x+=(p.tx-p.x)*k;p.y+=(p.ty-p.y)*k;ctx.fillStyle=p.c;ctx.fillText(p.ch,p.x,p.y)}let elapsed=(now-start)/1000;if(elapsed>4){ctx.globalAlpha=Math.min(1,(elapsed-4)*.7);ctx.font='bold 26px Arial';ctx.fillStyle='#fff';ctx.fillText('@YOUR_USERNAME',w/2,h/2+Math.min(w*.32,h*.52,270)+42);ctx.globalAlpha=1}requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+</script></body></html>
